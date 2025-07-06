@@ -4,10 +4,10 @@ import axios, {
 } from "axios";
 
 export const API_BASE_URL =
-  import.meta.env.VITE_API_URL ?? "http://localhost:5631";
+  import.meta.env.VITE_API_URL ?? "http://localhost:5631/api";
 
-function createClient(): AxiosInstance {
-  const client = axios.create({ baseURL: API_BASE_URL, timeout: 10_000 });
+function createClient(baseURL: string): AxiosInstance {
+  const client = axios.create({ baseURL, timeout: 10_000 });
 
   client.interceptors.request.use((cfg: InternalAxiosRequestConfig) => {
     const token = localStorage.getItem("access_token");
@@ -29,4 +29,5 @@ function createClient(): AxiosInstance {
   return client;
 }
 
-export const http = createClient();
+export const http       = createClient(API_BASE_URL);             // /api
+export const httpReact  = createClient(`${API_BASE_URL}/react`);  // /api/react

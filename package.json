@@ -19,6 +19,7 @@
     "@mui/system": "^7.1.1",
     "@mui/utils": "^7.1.1",
     "axios": "^1.10.0",
+    "dayjs": "^1.11.13",
     "jwt-decode": "^4.0.0",
     "ra-core": "5.8.4",
     "ra-data-simple-rest": "5.8.4",

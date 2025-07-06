@@ -7,6 +7,7 @@ import {
   SearchInput
 } from "react-admin";
 import { usePermissions } from "react-admin";
+import { StatusButton } from "./StatusButton";
 
 export const ProspectListDefault = () => {
   const { identity } = usePermissions();       // contains agence + gouvernorat
@@ -30,9 +31,9 @@ export const ProspectListDefault = () => {
         <TextField source="id"           label="ID" />
         <TextField source="nom"          />
         <TextField source="prenom"       />
-        <TextField source="status"       />
-        <TextField source="ville"        />
-        <TextField source="gouvernorat"  />
+        <TextField source="status"     />
+        
+        <StatusButton />  
       </DatagridConfigurable>
     </List>
   );

@@ -8,7 +8,7 @@ export const ProspectList = () => {
     console.log("🚀 ~ ProspectList ~ permissions:", permissions)
 
     if (permissions === "CHARGEE_OP") {
-        return <ProspectListChargeeOp  />;
+        return <ProspectListDefault  />;
     }
     return <ProspectListDefault  />;
 };

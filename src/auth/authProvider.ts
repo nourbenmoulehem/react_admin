@@ -43,6 +43,7 @@ export const authProvider: AuthProvider = {
       email: username,
       password,
     }); // data = { token, email, role }
+    console.log("🚀 ~ login ~ data:", data)
 
     if (!ALLOWED_ROLES.has(cleanRole(data.role)))
       return Promise.reject(new Error("RBAC: forbidden role"));
