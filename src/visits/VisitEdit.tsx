@@ -110,7 +110,7 @@ export const VisitEdit = () => (
         </Grid>
       </Box>
 
-      <Box sx={{ mb: 3 }}>
+      {/* <Box sx={{ mb: 3 }}>
         <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: 'bold', color: 'text.secondary' }}>
           Statut de la visite
         </Typography>
@@ -126,7 +126,7 @@ export const VisitEdit = () => (
           validate={required()}
           sx={{ width: '100%' }}
         />
-      </Box>
+      </Box> */}
 
       <Box sx={{ mb: 3 }}>
         <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: 'bold', color: 'text.secondary' }}>

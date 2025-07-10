@@ -11,6 +11,7 @@ import { VisitList } from "./visits/VisitList.js";
 import { VisitCreate } from "./visits/VisitCreate.js";
 import { VisitEdit } from "./visits/VisitEdit.js";
 import EventIcon from '@mui/icons-material/Event';
+import { ProspectEdit } from "./prospects/ProspectEdit.js";
 
 
 
@@ -24,6 +25,7 @@ export function App() {
           <Resource
             name="prospects"
             list={ProspectList}
+            edit={ProspectEdit}
             icon={PersonIcon}
             options={{ label: "Prospects" }}
           />
