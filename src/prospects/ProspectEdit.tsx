@@ -127,9 +127,21 @@ export const ProspectEdit = () => {
   );
 };
 
+  const transform = (data) => {
+  console.log('Form data before save:', data);
+  console.log('Transform - Status field:', data.status);
+
+  const transformedData = {
+    ...data,
+    status: data.status || 'PAS_ENCORE_CONTACTE'
+  };
+  
+  console.log('Transform - Final data:', transformedData);
+  return transformedData;
+};
 
   return (
-    <Edit actions={<EditActions />} mutationMode="pessimistic">
+    <Edit transform={transform} actions={<EditActions />} mutationMode="optimistic">
       <SimpleForm toolbar={<CustomToolbar />}>
         <Box sx={{ width: '100%' }}>
           <Grid container spacing={3}>
@@ -247,7 +259,9 @@ export const ProspectEdit = () => {
                     <Grid size={{ xs: 12}}>
                       <SelectInput 
                         source="status" 
-                        label="Statut" 
+                        label="Statut"
+                        // optionValue="id"          
+                        // optionText="name"
                         choices={statusChoices}
                         fullWidth
                       />
