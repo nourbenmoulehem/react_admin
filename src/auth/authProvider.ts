@@ -53,6 +53,17 @@ export const authProvider: AuthProvider = {
     return Promise.resolve();
   },
 
+
+  /* ---------- login ------------------------------------------------ */
+  async signup({ username, password }) {
+    const { data } = await http.post("/auth/login", {
+      email: username,
+      password,
+    }); // data = { token, email, role }
+    
+  },
+
+
   /* ---------- logout ----------------------------------------------- */
   logout() {
     localStorage.removeItem(STORAGE_KEY);

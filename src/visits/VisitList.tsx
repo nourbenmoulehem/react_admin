@@ -26,7 +26,7 @@ const VisitListActions = () => (
 const StatusChip = ({ record }: any) => {
   const statusConfig = {
     REPORTEE: { color: '#2196f3', bgColor: '#e3f2fd', label: ' Reportée ' },
-    CONFIRMEE: { color: '#ff9800', bgColor: '#fff3e0', label: 'Confirmée' },
+    PLANIFIEE: { color: '#ff9800', bgColor: '#fff3e0', label: 'Planifiée' },
     REALISEE: { color: '#4caf50', bgColor: '#e8f5e8', label: 'Réalisée' },
     NO_SHOW: { color: '#9e9e9e', bgColor: '#f5f5f5', label: 'Terminée' },
     ANNULEE: { color: '#f44336', bgColor: '#ffebee', label: 'Annulée' }

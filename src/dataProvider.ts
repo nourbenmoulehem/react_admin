@@ -99,9 +99,11 @@ const handleVisits = (type: string, resource: string, params: any) => {
       }).then(({ json }) => ({ data: json }));
 
     case 'DELETE':
-      return httpClient(`${url}/${params.id}`, {
-        method: 'DELETE',
-      }).then(() => ({ data: params.previousData }));
+      return httpClient(`${url}/${params.id}`, { method: 'DELETE' })
+        .then(() => ({
+          // Tell react-admin which record was deleted
+          data: { id: params.id },
+        }));
 
     default:
       throw new Error(`Unsupported fetch action type ${type}`);
@@ -199,7 +201,7 @@ export const dataProvider = {
     }
 
     if (resource === 'visits') {
-        return handleVisits('GET_LIST', resource, params);
+        return handleVisits('UPDATE', resource, params);
     }
 
     return base.update(resource, params);
