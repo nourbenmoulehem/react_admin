@@ -14,6 +14,21 @@ const ALLOWED_ROLES = new Set([
   "ADMIN",
 ]);
 
+export interface RegisterParams {
+  email: string;
+  password: string;
+  nom: string;
+  prenom: string;
+  role: string;      //  e.g. "GESTIONNAIRE_PORTFEUIL"
+  matricule: string; //  employee id
+}
+
+/** Extend AuthProvider with a register function */
+export interface ExtendedAuthProvider extends AuthProvider {
+  register: (params: RegisterParams) => Promise<void>;
+}
+
+
 const STORAGE_KEY = "access_token";
 
 /* helper: strip optional "ROLE_" prefix */
@@ -55,12 +70,32 @@ export const authProvider: AuthProvider = {
 
 
   /* ---------- login ------------------------------------------------ */
-  async signup({ username, password }) {
-    const { data } = await http.post("/auth/login", {
-      email: username,
-      password,
-    }); // data = { token, email, role }
-    
+  register: async ({
+    email,
+    password,
+    nom,
+    prenom,
+    role,
+    matricule,
+  }: RegisterParams) => {
+    try {
+      await http.post("/api/auth/register", {
+        email,
+        password,
+        nom,
+        prenom,
+        role,
+        matricule,
+      });
+      /* 201 means the backend also sent the verification e-mail.
+         Just resolve; the Sign-up page will display a “check your inbox”
+         notification and redirect to /login. */
+    } catch (e: any) {
+      // Let the form show a readable message
+      throw new Error(
+        e.response?.data?.message || "Échec de création du compte"
+      );
+    }
   },
 
 
