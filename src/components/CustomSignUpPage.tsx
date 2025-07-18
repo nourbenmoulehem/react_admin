@@ -11,22 +11,59 @@ import {
   Link
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { useNotify } from "react-admin"; 
+import { authProvider, ExtendedAuthProvider } from "../auth/authProvider";
 
 export const CustomSignUpPage = () => {
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
+     prenom: "",
+    nom: "",
+    email: "",
+    matricule: "",
+    role: 'CHARGEE_OP',
+    password: "",
+    confirmPassword: "",
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const notify = useNotify();
 
   const handleChange = (field: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData(prev => ({ ...prev, [field]: e.target.value }));
   };
+
+  // const handleSignUp = async (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   setError("");
+
+  //   if (formData.password !== formData.confirmPassword) {
+  //     setError("Les mots de passe ne correspondent pas");
+  //     return;
+  //   }
+
+  //   setLoading(true);
+  //   try {
+  //     await (authProvider as any).register({
+  //       email: formData.email.trim(),
+  //       password: formData.password,
+  //       nom: formData.nom.trim(),
+  //       prenom: formData.prenom.trim(),
+  //       matricule: formData.matricule.trim(),
+  //       role: formData.role,
+  //     });
+  //     notify(
+  //       "Compte créé ! Vérifiez votre boîte mail pour activer votre accès.",
+  //       { type: "success" }
+  //     );
+  //     navigate("/login");
+  //   } catch (e: any) {
+  //     setError(e.message || "Échec de création du compte");
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -40,29 +77,51 @@ export const CustomSignUpPage = () => {
     }
 
     try {
-      // Add your signup logic here
-      console.log('Signing up with:', formData);
-      // You can show a success message or redirect
-      alert('Account created successfully!');
-      navigate('/login');
-    } catch (err) {
-      setError('Failed to create account');
+      const extendedAuthProvider = authProvider as ExtendedAuthProvider;
+      await extendedAuthProvider.register({
+        email: formData.email,
+        password: formData.password,
+        nom: formData.nom,
+        prenom: formData.prenom,
+        role: formData.role,
+        matricule: formData.matricule,
+      });
+      
+      // Navigate to verification page with email
+      navigate('/verify', { 
+        state: { 
+          email: formData.email,
+          message: 'Compte créé ! Vérifiez votre boîte mail pour activer votre accès.' 
+        }
+      });
+    } catch (err: any) {
+      setError(err.message || 'Failed to create account');
     } finally {
       setLoading(false);
     }
   };
-
   return (
     <Box
       sx={{
         display: 'flex',
+        flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
         minHeight: '100vh',
-        background: 'linear-gradient(135deg, #C0355E 0%, #E8639B 100%)',
+        // background: 'linear-gradient(135deg, #C0355E 0%, #E8639B 100%)',
         padding: 2,
       }}
     >
+
+      <img 
+            src="/enda-logo.png" 
+            alt="Enda Logo" 
+            style={{ 
+              height: '100px',
+              width: 'auto',
+              marginBottom: '16px'
+            }} 
+          />
       <Card
         sx={{
           maxWidth: 450,
@@ -80,20 +139,12 @@ export const CustomSignUpPage = () => {
             textAlign: 'center',
           }}
         >
-          <img 
-            src="/enda-logo.png" 
-            alt="Enda Logo" 
-            style={{ 
-              height: '60px',
-              width: 'auto',
-              marginBottom: '16px'
-            }} 
-          />
+          
           <Typography variant="h4" fontWeight="600">
-            Join Enda
+            Rejoignez Enda
           </Typography>
           <Typography variant="body1" sx={{ opacity: 0.9, mt: 1 }}>
-            Create your account
+            Créez votre compte
           </Typography>
         </Box>
 
@@ -106,12 +157,32 @@ export const CustomSignUpPage = () => {
                 </Alert>
               )}
 
+              <TextField
+                fullWidth
+                label="Matricule"
+                type="text"
+                value={formData.matricule}
+                onChange={handleChange('matricule')}
+                required
+                sx={{
+                  '& .MuiOutlinedInput-root': {
+                    borderRadius: '8px',
+                    '&:hover .MuiOutlinedInput-notchedOutline': {
+                      borderColor: '#C0355E',
+                    },
+                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                      borderColor: '#C0355E',
+                    },
+                  },
+                }}
+              />
+
               <Box sx={{ display: 'flex', gap: 2 }}>
                 <TextField
                   fullWidth
-                  label="First Name"
-                  value={formData.firstName}
-                  onChange={handleChange('firstName')}
+                  label="Prénom"
+                  value={formData.prenom}
+                  onChange={handleChange('prenom')}
                   required
                   sx={{
                     '& .MuiOutlinedInput-root': {
@@ -127,9 +198,9 @@ export const CustomSignUpPage = () => {
                 />
                 <TextField
                   fullWidth
-                  label="Last Name"
-                  value={formData.lastName}
-                  onChange={handleChange('lastName')}
+                  label="Nom"
+                  value={formData.nom}
+                  onChange={handleChange('nom')}
                   required
                   sx={{
                     '& .MuiOutlinedInput-root': {
@@ -167,7 +238,7 @@ export const CustomSignUpPage = () => {
 
               <TextField
                 fullWidth
-                label="Password"
+                label="Mot de passe"
                 type="password"
                 value={formData.password}
                 onChange={handleChange('password')}
@@ -187,7 +258,7 @@ export const CustomSignUpPage = () => {
 
               <TextField
                 fullWidth
-                label="Confirm Password"
+                label="Confirmez le mot de passe"
                 type="password"
                 value={formData.confirmPassword}
                 onChange={handleChange('confirmPassword')}
@@ -225,12 +296,12 @@ export const CustomSignUpPage = () => {
                   },
                 }}
               >
-                {loading ? 'Creating Account...' : 'Create Account'}
+                {loading ? 'Création du compte…' : 'Créer le compte'}
               </Button>
 
               <Box sx={{ textAlign: 'center', mt: 2 }}>
                 <Typography variant="body2" color="text.secondary">
-                  Already have an account?{' '}
+                   Vous avez déjà un compte ?{' '}
                   <Link
                     component="button"
                     type="button"
@@ -244,7 +315,7 @@ export const CustomSignUpPage = () => {
                       },
                     }}
                   >
-                    Sign In
+                    Se connecter
                   </Link>
                 </Typography>
               </Box>

@@ -54,22 +54,35 @@ function getValidToken():
 export const authProvider: AuthProvider = {
   /* ---------- login ------------------------------------------------ */
   async login({ username, password }) {
-    const { data } = await http.post("/auth/login", {
+
+    try {
+      const { data } = await http.post("/auth/login", {
       email: username,
       password,
-    }); // data = { token, email, role }
-    console.log("🚀 ~ login ~ data:", data)
+      }); // data = { token, email, role }
+      console.log("🚀 ~ login ~ data:", data)
 
-    if (!ALLOWED_ROLES.has(cleanRole(data.role)))
-      return Promise.reject(new Error("RBAC: forbidden role"));
+      if (!ALLOWED_ROLES.has(cleanRole(data.role)))
+        return Promise.reject(new Error("RBAC: forbidden role"));
 
-    localStorage.setItem(STORAGE_KEY, data.token);
-    localStorage.setItem("ra_auth_role", cleanRole(data.role));
-    return Promise.resolve();
+      localStorage.setItem(STORAGE_KEY, data.token);
+      localStorage.setItem("ra_auth_role", cleanRole(data.role));
+      return Promise.resolve();
+        
+    } catch (error: any) {
+        const msg =
+        error?.response?.data?.message        // Spring MessageResponse
+        ?? error?.message
+        ?? 'Erreur inconnue';
+      /* --- propage le message jusqu’au composant --- */
+      throw new Error(msg);                   // <- très important
+      
+    }
+    
   },
 
 
-  /* ---------- login ------------------------------------------------ */
+  /* ---------- signup ------------------------------------------------ */
   register: async ({
     email,
     password,
@@ -79,7 +92,7 @@ export const authProvider: AuthProvider = {
     matricule,
   }: RegisterParams) => {
     try {
-      await http.post("/api/auth/register", {
+      await http.post("/auth/register", {
         email,
         password,
         nom,
@@ -96,6 +109,19 @@ export const authProvider: AuthProvider = {
         e.response?.data?.message || "Échec de création du compte"
       );
     }
+  },
+
+
+  // ───────────────────────── Verify account ───────────────────
+  async verify(email: string, code: string): Promise<{ email: string; code: string }> {
+    await http.post("/auth/verify", { email, code });  // 200
+    return { email, code };
+  },
+
+  // ───────────────────────── Resend code ──────────────────────
+  async resendCode(email: string): Promise<{ email: string }> {
+    await http.post("/resend", { email });        // 200
+    return { email };
   },
 
 

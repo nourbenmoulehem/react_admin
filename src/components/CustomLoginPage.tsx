@@ -29,9 +29,9 @@ export const CustomLoginPage = () => {
 
     try {
       await login({ username: email, password });
-    } catch (err) {
-      setError('Invalid credentials');
-      notify('Login failed', { type: 'error' });
+    } catch (err: any) {
+      setError(err.message || 'Échec de la connexion');
+      notify('Échec de la connexion', { type: 'error' });
     } finally {
       setLoading(false);
     }
@@ -41,13 +41,24 @@ export const CustomLoginPage = () => {
     <Box
       sx={{
         display: 'flex',
+        flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
         minHeight: '100vh',
-        background: 'linear-gradient(135deg, #C0355E 0%, #E8639B 100%)',
+        // background: 'linear-gradient(135deg, #C0355E 0%, #E8639B 100%)',
         padding: 2,
       }}
     >
+
+      <img 
+        src="/enda-logo.png" 
+        alt="Enda Logo" 
+        style={{ 
+          height: '100px',
+          width: 'auto',
+          marginBottom: '16px'
+        }} 
+      />
       <Card
         sx={{
           maxWidth: 400,
@@ -65,20 +76,12 @@ export const CustomLoginPage = () => {
             textAlign: 'center',
           }}
         >
-          <img 
-            src="/enda-logo.png" 
-            alt="Enda Logo" 
-            style={{ 
-              height: '60px',
-              width: 'auto',
-              marginBottom: '16px'
-            }} 
-          />
+          
           <Typography variant="h4" fontWeight="600">
-            Welcome to Enda
+            Bienvenue chez Enda Admin
           </Typography>
           <Typography variant="body1" sx={{ opacity: 0.9, mt: 1 }}>
-            Sign in to your account
+            Connectez-vous à votre compte
           </Typography>
         </Box>
 
@@ -113,7 +116,7 @@ export const CustomLoginPage = () => {
 
               <TextField
                 fullWidth
-                label="Password"
+                label="Mot de Passe"
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -151,12 +154,12 @@ export const CustomLoginPage = () => {
                   },
                 }}
               >
-                {loading ? 'Signing in...' : 'Sign In'}
+                {loading ? 'Connexion en cours…' : 'Se connecter'}
               </Button>
 
               <Box sx={{ textAlign: 'center', mt: 2 }}>
                 <Typography variant="body2" color="text.secondary">
-                  Don't have an account?{' '}
+                  Pas encore de compte ?{' '}
                   <Link
                     component="button"
                     type="button"
@@ -170,7 +173,7 @@ export const CustomLoginPage = () => {
                       },
                     }}
                   >
-                    Sign Up
+                    S’inscrire
                   </Link>
                 </Typography>
               </Box>

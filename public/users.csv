@@ -1,0 +1,5 @@
+id,email,nom,prenom,tel,role,isEnabled,isVerified,matricule,createdAt
+1,chargeeop@gmail.com,nour,test,,CHARGEE_OP,false,true,P00003,2025-07-09T08:45:29Z
+2,nbenmoulehom@gmail.com,nour,gp,,GESTIONNAIRE_PORTFEUIL,false,true,P00004,2025-07-09T08:46:23Z
+4,nour.gwed@gmail.com,Ben Moulehem,Nour,,PROSPECTEUR,false,true,P00005,2025-07-16T07:59:49Z
+7,nour.benmoulehom@istic.ucar.tn,BEN MOULEHEM,Nour,,ADMIN,false,true,P00001,2025-07-18T08:26:15Z

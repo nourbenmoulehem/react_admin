@@ -16,8 +16,15 @@ import EventIcon from '@mui/icons-material/Event';
 import { ProspectEdit } from "./prospects/ProspectEdit.js";
 import { CustomLoginPage } from "./components/CustomLoginPage";
 import { CustomSignUpPage } from "./components/CustomSignUpPage";
-import { CustomLayout } from "./components/CustomLayout";
 import { endaTheme } from "./theme";
+import { VerificationPage } from "./components/VerificationPage.js";
+import { CustomLayout } from "./Layout.js";
+import { UserList } from "./users/UsersList.js";
+import { UserCreate } from "./users/UserCreate.js";
+import { UserEdit } from "./users/UserEdit.js";
+import DashboardAdmin from "./AdminDashboard.js";
+
+// Default dashboard components (you may need to create these)
 
 export function App() {
   return (
@@ -26,7 +33,13 @@ export function App() {
       <Admin 
         dataProvider={dataProvider} 
         authProvider={authProvider} 
-        dashboard={Dashboard}
+        dashboard={({ permissions }) =>
+          permissions === 'ADMIN'
+            ? <DashboardAdmin />
+            : permissions === 'CHARGEE_OP'
+              ? <Dashboard />
+              : null
+        }
         layout={CustomLayout}
         loginPage={CustomLoginPage}
         theme={endaTheme}
@@ -34,38 +47,52 @@ export function App() {
         {/* Custom routes for signup */}
         <CustomRoutes noLayout>
           <Route path="/signup" element={<CustomSignUpPage />} />
+          <Route path="/verify" element={<VerificationPage />} />
         </CustomRoutes>
 
-        {permissions => (
+        {(permissions) => (
           <>
-            {/* Anyone who passes checkAuth gets Prospects */}
-            <Resource
-              name="prospects"
-              list={ProspectList}
-              edit={ProspectEdit}
-              icon={PersonIcon}
-              options={{ label: "Prospects" }}
-            />
+            {/* Resources for CHARGEE_OP */}
+            {permissions === "CHARGEE_OP" && (
+              <>
+                <Resource
+                  name="prospects"
+                  list={ProspectList}
+                  edit={ProspectEdit}
+                  icon={PersonIcon}
+                  options={{ label: "Prospects" }}
+                />
 
-            <Resource
-              name="gps"
-              list={GpList}
-              icon={PersonIcon}
-              options={{ label: "GPS" }}
-            />
+                <Resource
+                  name="gps"
+                  list={GpList}
+                  icon={PersonIcon}
+                  options={{ label: "GPS" }}
+                />
 
-            <Resource
-              name="visits"
-              list={VisitList}
-              create={VisitCreate}
-              edit={VisitEdit}
-              icon={EventIcon}
-              options={{ label: "Visites" }}
-            />
+                <Resource
+                  name="visits"
+                  list={VisitList}
+                  create={VisitCreate}
+                  edit={VisitEdit}
+                  icon={EventIcon}
+                  options={{ label: "Visites" }}
+                />
+              </>
+            )}
 
-            {/* Example: only ADMIN sees the Users resource */}
+            {/* Resources for ADMIN */}
             {permissions === "ADMIN" && (
-              <Resource name="users" /* Add your user components here */ />
+              <>
+                <Resource
+                  name="users"
+                  list={UserList}
+                  create={UserCreate}
+                  edit={UserEdit}
+                />
+                
+                
+              </>
             )}
           </>
         )}
@@ -73,67 +100,3 @@ export function App() {
     </ThemeProvider>
   );
 }
-
-// // App.tsx
-// import { Admin, CustomRoutes, Resource } from "react-admin";
-// import { dataProvider } from "./dataProvider";
-// import { authProvider } from "./auth/authProvider";
-// import { ProspectList } from "./prospects/ProspectList.js";
-// // import { ProspectEdit } from "./prospects/ProspectEdit";
-// import  {Dashboard}  from "./Dashboard";
-// import PersonIcon from '@mui/icons-material/Person';
-// import { GpList } from "./gp/GpList.js";
-// import { VisitList } from "./visits/VisitList.js";
-// import { VisitCreate } from "./visits/VisitCreate.js";
-// import { VisitEdit } from "./visits/VisitEdit.js";
-// import EventIcon from '@mui/icons-material/Event';
-// import { ProspectEdit } from "./prospects/ProspectEdit.js";
-// import { Route } from "react-router-dom"; 
-// import SignUpPage from "./auth/SignUpPage.js";
-
-
-
-// export function App() {
-//   return (
-
-//     <Admin dataProvider={dataProvider} authProvider={authProvider} dashboard={Dashboard}>
-//        {/* Public route */}
-//       <Route path="/signup" element={<SignUpPage />} />
-
-
-//       {permissions => (
-//         <>
-//           {/* Anyone who passes checkAuth gets Prospects */}
-//           <Resource
-//             name="prospects"
-//             list={ProspectList}
-//             edit={ProspectEdit}
-//             icon={PersonIcon}
-//             options={{ label: "Prospects" }}
-//           />
-
-//           <Resource
-//             name="gps"
-//             list={GpList}
-//             icon={PersonIcon}
-//             options={{ label: "gps" }}
-//           />
-
-//           <Resource
-//             name="visits"
-//             list={VisitList}
-//             create={VisitCreate}
-//             edit={VisitEdit}
-//             icon={EventIcon}
-//             options={{ label: "Visites" }}
-//           />
-
-//           {/* Example: only ADMIN sees the Users resource */}
-//           {permissions === "ADMIN" && (
-//             <Resource name="users" /* … */ />
-//           )}
-//         </>
-//       )}
-//     </Admin>
-//   );
-// }

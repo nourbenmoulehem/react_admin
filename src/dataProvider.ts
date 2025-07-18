@@ -2,6 +2,7 @@
 import simpleRestProvider from "ra-data-simple-rest";
 import { stringify }       from "query-string";
 import { httpReact, API_BASE_URL } from "../src/api/http";
+import { GetListResult } from "ra-core";
 
 /* ------------------------------------------------------------------ */
 /* 1.  httpClient : garde votre Axios + injection du Bearer token      */
@@ -70,6 +71,10 @@ const convertListParams = ({ pagination, sort, filter }: any) => {
   });
 };
 
+
+
+
+
 const handleVisits = (type: string, resource: string, params: any) => {
   const url = `${API_BASE_URL}/react/${resource}`;
   
@@ -110,6 +115,51 @@ const handleVisits = (type: string, resource: string, params: any) => {
   }
 };
 
+const handleUsers = (type: string, resource: string, params: any) => {
+  const url = `${API_BASE_URL}/react/${resource}`;
+
+  switch (type) {
+    case 'GET_LIST':
+      return httpClient(`${url}?${convertListParams(params)}`).then(({ json, headers }) => ({
+        data: json.content, // Spring Page returns content array
+        total: json.totalElements || parseInt(headers.get('X-Total-Count') || '0', 10),
+      }));
+
+    case 'GET_ONE':
+      return httpClient(`${url}/${params.id}`).then(({ json }) => ({ data: json }));
+
+    case 'CREATE':
+      return httpClient(url, {
+        method: 'POST',
+        body: JSON.stringify(params.data),
+      }).then(({ json }) => ({ data: json }));
+
+    case 'UPDATE':
+      return httpClient(`${url}/${params.id}`, {
+        method: 'PUT',
+        body: JSON.stringify(params.data),
+      }).then(({ json }) => ({ data: json }));
+
+    // case 'DELETE':
+    //   return httpClient(`${url}/${params.id}`, {
+    //     method: 'PUT',
+    //     body  : JSON.stringify({ isEnabled: false }),
+    //   }).then(({ json }) => ({ data: json }));
+    
+    //   case 'DELETE_MANY':
+    //     return Promise.all(
+    //       params.ids.map((id: number) =>
+    //         httpClient(`${url}/${id}`, {
+    //           method: 'PUT',
+    //           body  : JSON.stringify({ isEnabled: false }),
+    //         }),
+    //       ),
+    //     ).then(() => ({ data: params.ids }));
+    default:
+      throw new Error(`Unsupported fetch action type ${type}`);
+  }
+};
+
 export const dataProvider = {
   ...base,
 
@@ -132,6 +182,37 @@ export const dataProvider = {
         total: json.length
       }));
     }
+
+    if (resource === "users") {
+  const { pagination, sort, filter } = params;
+  const queryObj: any = {
+    page: pagination.page - 1,                       // Spring page index
+    size: pagination.perPage,
+    sort: `${sort.field},${sort.order.toLowerCase()}`
+  };
+
+  /* ① full-text search (q) */
+  if (filter.q) {
+    queryObj.q = filter.q.trim();                    // ?q=Ben
+  }
+
+  /* ② role filter */
+  if (filter.role) {
+    queryObj.role = filter.role;                     // ?role=ADMIN
+  }
+
+  /* ③ any other filters you might add later */
+  Object.entries(filter).forEach(([k, v]) => {
+    if (!["q", "role"].includes(k)) queryObj[k] = v;
+  });
+
+  const query = stringify(queryObj);
+  return httpClient(`${API_BASE_URL}/react/users?${query}`)
+    .then(({ json }) => ({
+      data : json.content,        // array
+      total: json.totalElements   // number
+    }));
+}
 
     
 
@@ -162,6 +243,11 @@ export const dataProvider = {
 
       return httpClient(url)
         .then(({ json }) => ({ data: json }));
+    }
+
+
+     if (resource === 'users') {
+      return handleUsers('GET_ONE', resource, params);
     }
 
     
@@ -204,6 +290,10 @@ export const dataProvider = {
         return handleVisits('UPDATE', resource, params);
     }
 
+    if (resource === 'users') {
+      return handleUsers('UPDATE', resource, params);
+    }
+
     return base.update(resource, params);
   },
 
@@ -225,7 +315,15 @@ export const dataProvider = {
       headers: { "Content-Type": "application/json" } 
       , transformRequest: (d) => d
     }).then(({ data }) => ({ data }));
+
+
   }
+
+
+
+  if (resource === 'users') {
+      return handleUsers('CREATE', resource, params);
+    }
   return base.create(resource, params);
 },
 
