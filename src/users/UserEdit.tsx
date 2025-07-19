@@ -12,7 +12,7 @@ import {
     email,
     maxLength,
 } from 'react-admin';
-import { Grid, Typography, Divider, CircularProgress } from '@mui/material';
+import { Grid, Typography, Divider, CircularProgress, Box } from '@mui/material';
 
 /* ───── Sélecteur de rôle dynamique ─────────────────────────────── */
 const RoleSelectInput = (props: any) => {
@@ -51,6 +51,13 @@ const roleChoices = [
 export const UserEdit = () => (
     <Edit title="Modifier un utilisateur">
         <SimpleForm toolbar={<UserEditToolbar />}>
+        <Box sx={{
+            maxWidth: 800,
+            mx: 'auto',
+            p: 3,
+            bgcolor: 'background.paper',
+            
+          }}>
             <Typography variant="h5" color="primary" gutterBottom>
                 Modifier un utilisateur
             </Typography>
@@ -110,6 +117,7 @@ export const UserEdit = () => (
                     />
                 </Grid>
             </Grid>
+            </Box>
         </SimpleForm>
     </Edit>
 );

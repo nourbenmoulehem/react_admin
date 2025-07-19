@@ -462,7 +462,7 @@
           </Grid>
 
           {/* Performance Metrics */}
-          <Grid size = {{xs: 12, md: 4}}>
+          <Grid size = {{xs: 12, md: 6}}>
             <Card>
               <CardHeader title="Performance du mois" />
               <CardContent>
@@ -515,12 +515,12 @@
           </Grid>
 
           {/* Quick Actions */}
-          <Grid size = {{xs: 12, md: 4}}>
+          {/* <Grid size = {{xs: 12, md: 4}}>
             <QuickActions />
-          </Grid>
+          </Grid> */}
 
           {/* Recent Activity */}
-          <Grid size = {{xs: 12, md: 4}}>
+          {/* <Grid size = {{xs: 12, md: 4}}>
             <Card>
               <CardHeader title="Activité récente" />
               <CardContent>
@@ -563,14 +563,14 @@
                 </Stack>
               </CardContent>
             </Card>
-          </Grid>
+          </Grid> */}
 
           {/* Charts */}
           <Grid size = {{xs: 12, md: 6}}>
             <CustomPieChart data={statusStats} title="Répartition des Statuts Prospects" />
           </Grid>
           
-          <Grid size = {{xs: 12, md: 6}}>
+          <Grid size = {{xs: 12, md: 18}}>
             <CustomPieChart data={visitStatusStats} title="Statuts des Visites" />
           </Grid>
           

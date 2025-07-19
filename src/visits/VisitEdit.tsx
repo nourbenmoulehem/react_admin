@@ -401,16 +401,7 @@ export const VisitEdit = () => {
   return (
     <Edit transform={transform}>
       <SimpleForm>
-        <Box
-          sx={{
-            maxWidth: 800,
-            mx: 'auto',
-            p: 3,
-            bgcolor: (theme) => theme.palette.background.paper,
-            borderRadius: (theme) => theme.shape.borderRadius,
-            boxShadow: (theme) => theme.shadows[1],
-          }}
-        >
+        
           <Typography variant="h5" color="primary" gutterBottom>
             ✏️ Modifier la visite
           </Typography>
@@ -543,7 +534,6 @@ export const VisitEdit = () => {
             />
             <TextInput source="commentaires" label="Commentaires" multiline rows={3} fullWidth />
           </Box>
-        </Box>
       </SimpleForm>
     </Edit>
   );
